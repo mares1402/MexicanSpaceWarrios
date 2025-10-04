@@ -173,11 +173,9 @@
       width: 100%;
       max-width: 1200px;
       height: 600px; /* Altura para la escena 3D */
-      border: 2px solid #005eff;
       border-radius: 8px;
       overflow: hidden;
       background: #000; /* Fondo mientras carga */
-      box-shadow: 0 0 20px rgba(0, 0, 255, 0.2);
       display: block; /* Asegura que se comporte como un bloque */
       margin: 0 auto; /* Centra el iframe si el contenedor es más ancho */
     }
@@ -195,20 +193,14 @@
       }
     }
 
-    /* Estilos para mantener los controles visibles y funcionales en pantalla completa */
-    html.a-fullscreen .top-controls {
-      position: fixed; /* Fija los controles en la parte superior de la ventana */
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10000; /* Un z-index más alto que el de A-Frame (9999) */
-      pointer-events: none; /* El contenedor no captura clics, pero sus hijos sí pueden */
+    /* Ocultar el HUD (controles y logo) cuando A-Frame está en pantalla completa */
+    html.a-fullscreen .top-controls,
+    html.a-fullscreen .logo {
+      display: none;
     }
 
-    /* Hacemos que los elementos dentro de los controles sí sean clickables */
-    html.a-fullscreen .top-controls > * {
-      pointer-events: auto;
-    }
-    html.a-fullscreen .logo {
-      z-index: 10000;
+    /* Ocultar borde y sombra del contenedor en pantalla completa */
+    html.a-fullscreen .image-container {
+      border: none;
+      box-shadow: none;
     }
