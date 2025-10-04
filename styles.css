@@ -1,0 +1,214 @@
+ @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    /*  Fondo negro con estrellas */
+    body {
+      font-family: 'Roboto Slab', serif;
+      margin: 0;
+      color: #fff;
+      background: black;
+      overflow-x: hidden;
+      position: relative;
+      height: 100vh;
+    }
+
+    /* Lienzo de estrellas detrás de todo */
+    canvas#stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(ellipse at bottom, #000 0%, #020111 100%);
+    }
+
+    /*  Banner superior azul */
+    .top-banner {
+      background-color: #0033a0;
+      color: white;
+      text-align: center;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    /* Navbar estilo NASA */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #000;
+      padding: 15px 30px;
+      position: relative;
+      color: white;
+      flex-wrap: wrap;
+    }
+
+    .left-section, .right-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 40px;
+      margin-top: 6px;
+    }
+
+    .dropdown {
+      border: 2px solid #005eff;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      background: none;
+      color: white;
+    }
+
+    .search-box input {
+      padding: 8px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      background: #111;
+      color: white;
+    }
+
+    .nav-item {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav-item::after {
+      content: '▼';
+      font-size: 10px;
+      margin-left: 5px;
+    }
+
+    .live-tag {
+      background: red;
+      color: white;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: bold;
+      border-radius: 3px;
+      margin-left: 4px;
+      vertical-align: top;
+    }
+
+    /*  Controles integrados */
+    .year-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(17, 17, 17, 0.8);
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 2px solid #005eff;
+    }
+
+    .year-selector button {
+      font-size: 16px;
+      border: none;
+      background: #005eff;
+      color: white;
+      border-radius: 4px;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .year-selector button:hover {
+      background: #003d99;
+    }
+
+    .year {
+      font-size: 18px;
+      font-weight: bold;
+      min-width: 60px;
+      text-align: center;
+      color: white;
+    }
+
+    select {
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #005eff;
+      background: #111;
+      color: white;
+    }
+
+    /* Content */
+    .content {
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .image-container {
+      width: 100%;
+      max-width: 1200px;
+      height: 600px; /* Definimos una altura para la escena 3D */
+      border: 2px solid #005eff;
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 20px rgba(0, 0, 255, 0.2);
+    }
+
+    .image-container img {
+      width: 100%;
+      display: block;
+    }
+
+    /* Estilos para el iframe de la escena VR */
+    .vr-iframe {
+      width: 100%;
+      max-width: 1200px;
+      height: 600px; /* Altura para la escena 3D */
+      border: 2px solid #005eff;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #000; /* Fondo mientras carga */
+      box-shadow: 0 0 20px rgba(0, 0, 255, 0.2);
+      display: block; /* Asegura que se comporte como un bloque */
+      margin: 0 auto; /* Centra el iframe si el contenedor es más ancho */
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .logo {
+        position: static;
+        transform: none;
+        align-self: center;
+      }
+    }
+
+    /* Estilos para mantener los controles visibles y funcionales en pantalla completa */
+    html.a-fullscreen .top-controls {
+      position: fixed; /* Fija los controles en la parte superior de la ventana */
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10000; /* Un z-index más alto que el de A-Frame (9999) */
+      pointer-events: none; /* El contenedor no captura clics, pero sus hijos sí pueden */
+    }
+
+    /* Hacemos que los elementos dentro de los controles sí sean clickables */
+    html.a-fullscreen .top-controls > * {
+      pointer-events: auto;
+    }
+    html.a-fullscreen .logo {
+      z-index: 10000;
+    }
