@@ -185,6 +185,49 @@
         align-self: center;
       }
     }
+
+    /* ✨ Estilos del astronauta flotante */
+    .astronaut {
+      position: fixed;
+      bottom: 100px;
+      right: 80px;
+      width: 140px;
+      animation: float 4s ease-in-out infinite;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* 💬 Burbuja de diálogo */
+    .speech-bubble {
+      position: fixed;
+      bottom: 240px;
+      right: 140px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 250px;
+      display: none;
+      font-family: 'Roboto Slab', serif;
+      font-size: 14px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .speech-bubble.show {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -320,6 +363,66 @@
       requestAnimationFrame(animateStars);
     }
     animateStars();
+  </script>
+
+  <!-- 🤖 Astronauta flotante -->
+  <img src="img/astronauta2.png" class="astronaut" id="astronaut" alt="Astronauta animado">
+  <div id="bubble" class="speech-bubble"></div>
+
+  <script>
+    /* 🧠 Datos curiosos del satélite Terra */
+    const curiosidades = [
+      "🌍 Terra fue lanzado el 18 de diciembre de 1999.",
+      "🛰️ Lleva cinco instrumentos científicos a bordo.",
+      "☁️ Observa los cambios en la atmósfera, los océanos y la superficie terrestre.",
+      "🔭 El instrumento MODIS capta imágenes en 36 longitudes de onda distintas.",
+      "🔥 Ayuda a detectar incendios forestales y monitorear el cambio climático.",
+      "🌡️ Es clave para entender el calentamiento global.",
+      "📡 Orbita la Tierra a unos 705 kilómetros de altitud.",
+      "🪐 Terra significa 'Tierra' en latín."
+    ];
+
+    const astronaut = document.getElementById("astronaut");
+    const bubble = document.getElementById("bubble");
+    let spanishVoice = null;
+
+    function loadVoices() {
+      const voices = speechSynthesis.getVoices();
+      spanishVoice =
+        voices.find(v => v.name.includes("Google español")) ||
+        voices.find(v => v.lang === "es-ES" || v.lang === "es-MX" || v.lang === "es-419") ||
+        voices[0];
+    }
+
+    if (typeof speechSynthesis !== "undefined") {
+      loadVoices();
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function speak(text) {
+      if (!window.speechSynthesis) {
+        alert("Tu navegador no soporta la síntesis de voz 😢");
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = spanishVoice?.lang || "es-ES";
+      utterance.voice = spanishVoice;
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    }
+
+    astronaut.addEventListener("click", () => {
+      const randomFact = curiosidades[Math.floor(Math.random() * curiosidades.length)];
+      bubble.textContent = randomFact;
+      bubble.classList.add("show");
+      speak(randomFact);
+      setTimeout(() => bubble.classList.remove("show"), 6000);
+    });
   </script>
 
 </body>
