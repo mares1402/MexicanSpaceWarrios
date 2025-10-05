@@ -107,12 +107,22 @@
    left: 50%;
    transform: translateX(-50%);
    z-index: 20;
+   display: flex;
+   align-items: center;
+   gap: 15px;
+ }
+
+ .logo-container h1 {
+   margin: 0;
+   font-size: 24px;
+   font-weight: bold;
+   color: white;
+   text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
  }
 
  .logo {
    height: 40px;
    /* Make the image behave as a block to avoid extra spaces */
-   display: block;
  }
 
  .dropdown {
