@@ -1,20 +1,27 @@
     /**
      * Handles the intro video playback.
-     * Hides the video and reveals the main app when the video ends.
+     * It hides the video container once the video has finished playing.
      */
     (function handleIntroVideo() {
       const introContainer = document.getElementById('intro-video-container');
       const introVideo = document.getElementById('intro-video');
+      const skipBtn = document.getElementById('skip-intro-btn');
 
-      if (introContainer && introVideo) {
-        const onVideoEnd = () => {
+      if (introContainer && introVideo && skipBtn) {
+        const finishIntro = () => {
+          // Remove listeners to prevent this from running twice
+          introVideo.removeEventListener('ended', finishIntro);
+          skipBtn.removeEventListener('click', finishIntro);
+
           introContainer.style.opacity = '0'; // Start fade-out
+          // After the transition, hide the element completely
           setTimeout(() => {
             introContainer.style.display = 'none'; // Hide video container completely
           }, 800); // Must match the transition duration in CSS
         };
 
-        introVideo.addEventListener('ended', onVideoEnd);
+        introVideo.addEventListener('ended', finishIntro);
+        skipBtn.addEventListener('click', finishIntro);
       }
     })();
 

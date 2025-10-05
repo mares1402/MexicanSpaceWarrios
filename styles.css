@@ -25,6 +25,31 @@
    object-fit: cover; /* Fill the screen without distorting the video */
  }
 
+ #skip-intro-btn {
+   position: absolute;
+   top: 20px;
+   right: 20px;
+   background: rgba(0, 0, 0, 0.5);
+   color: white;
+   border: 2px solid white;
+   border-radius: 50%;
+   width: 40px;
+   height: 40px;
+   font-size: 20px;
+   font-weight: bold;
+   cursor: pointer;
+   z-index: 10000;
+   transition: background 0.3s;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   padding-bottom: 3px; /* Small adjustment for perfect vertical alignment */
+ }
+
+ #skip-intro-btn:hover {
+   background: rgba(255, 255, 255, 0.2);
+ }
+
  /* Black background with stars */
  body {
    font-family: 'Roboto Slab', serif;
