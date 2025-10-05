@@ -11,7 +11,7 @@
       box-sizing: border-box;
     }
 
-    /* 🌌 Fondo negro con estrellas */
+    /* 🌌 Black background with stars */
     body {
       font-family: 'Roboto Slab', serif;
       margin: 0;
@@ -22,7 +22,7 @@
       height: 100vh;
     }
 
-    /* Lienzo de estrellas detrás de todo */
+    /* Stars canvas behind everything */
     canvas#stars {
       position: fixed;
       top: 0;
@@ -33,7 +33,7 @@
       background: radial-gradient(ellipse at bottom, #000 0%, #020111 100%);
     }
 
-    /* 🔵 Banner superior azul */
+    /* 🔵 Blue top banner */
     .top-banner {
       background-color: #0033a0;
       color: white;
@@ -42,7 +42,7 @@
       font-size: 14px;
     }
 
-    /* ⚫ Navbar estilo NASA */
+    /* ⚫ NASA-style Navbar */
     .navbar {
       display: flex;
       align-items: center;
@@ -108,7 +108,7 @@
       vertical-align: top;
     }
 
-    /* 🎛️ Controles integrados */
+    /* 🎛️ Integrated controls */
     .year-selector {
       display: flex;
       align-items: center;
@@ -151,7 +151,7 @@
       color: white;
     }
 
-    /* 📷 Imagen */
+    /* 📷 Image */
     .content {
       padding: 30px;
       display: flex;
@@ -186,7 +186,7 @@
       }
     }
 
-    /* ✨ Estilos del astronauta flotante */
+    /* ✨ Floating astronaut styles */
     .astronaut {
       position: fixed;
       bottom: 100px;
@@ -203,7 +203,7 @@
       100% { transform: translateY(0px); }
     }
 
-    /* 💬 Burbuja de diálogo */
+    /* 💬 Speech bubble */
     .speech-bubble {
       position: fixed;
       bottom: 240px;
@@ -232,20 +232,20 @@
 </head>
 <body>
 
-  <!-- 🌌 Fondo estrellado -->
+  <!-- 🌌 Starry background -->
   <canvas id="stars"></canvas>
 
   <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="NASA Logo">
 
   <div class="top-controls">
-    <!-- Selector de año -->
+    <!-- Year selector -->
     <div class="year-selector">
       <button id="prev">←</button>
       <div class="year" id="year"></div>
       <button id="next">→</button>
     </div>
 
-    <!-- Combo box de espectros -->
+    <!-- Spectrums combo box -->
     <select id="spectrums">
       <option value="aster">ASTER</option>
       <option value="ceres">CERES</option>
@@ -255,7 +255,7 @@
     </select>
   </div>
 
-  <!-- 📷 Contenido -->
+  <!-- 📷 Content -->
   <div class="content">
     <div class="image-container">
       <img id="spectrum-image" src="https://via.placeholder.com/800x400.png?text=ASTER+2025" alt="Espectro de Terra">
@@ -311,7 +311,7 @@
 
     updateImage();
 
-    /* ✨ Animación del fondo de estrellas */
+    /* ✨ Starry background animation */
     const canvas = document.getElementById("stars");
     const ctx = canvas.getContext("2d");
     let stars = [];
@@ -365,13 +365,13 @@
     animateStars();
   </script>
 
-  <!-- 🤖 Astronauta flotante -->
+  <!-- 🤖 Floating astronaut -->
   <img src="img/astronauta2.png" class="astronaut" id="astronaut" alt="Astronauta animado">
   <div id="bubble" class="speech-bubble"></div>
 
   <script>
-    /* 🧠 Datos curiosos del satélite Terra */
-    const curiosidades = [
+    /* 🧠 Fun facts about the Terra satellite */
+    const funFacts = [
       "🌍 Terra fue lanzado el 18 de diciembre de 1999.",
       "🛰️ Lleva cinco instrumentos científicos a bordo.",
       "☁️ Observa los cambios en la atmósfera, los océanos y la superficie terrestre.",
@@ -417,7 +417,7 @@
     }
 
     astronaut.addEventListener("click", () => {
-      const randomFact = curiosidades[Math.floor(Math.random() * curiosidades.length)];
+      const randomFact = funFacts[Math.floor(Math.random() * funFacts.length)];
       bubble.textContent = randomFact;
       bubble.classList.add("show");
       speak(randomFact);

@@ -1,216 +1,323 @@
  @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap');
 
-    * {
-      box-sizing: border-box;
-    }
+ * {
+   box-sizing: border-box;
+ }
 
-    /*  Fondo negro con estrellas */
-    body {
-      font-family: 'Roboto Slab', serif;
-      margin: 0;
-      color: #fff;
-      background: black;
-      overflow-x: hidden;
-      position: relative;
-      height: 100vh;
-    }
+ /* Intro Video Styles */
+ #intro-video-container {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: black;
+   z-index: 9999; /* Ensure it's on top of everything */
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   transition: opacity 0.8s ease-out; /* Smooth fade-out effect */
+ }
 
-    /* Lienzo de estrellas detrás de todo */
-    canvas#stars {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      background: radial-gradient(ellipse at bottom, #000 0%, #020111 100%);
-    }
+ #intro-video {
+   width: 100%;
+   height: 100%;
+   object-fit: cover; /* Fill the screen without distorting the video */
+ }
 
-    /*  Banner superior azul */
-    .top-banner {
-      background-color: #0033a0;
-      color: white;
-      text-align: center;
-      padding: 10px 20px;
-      font-size: 14px;
-    }
+ /* Black background with stars */
+ body {
+   font-family: 'Roboto Slab', serif;
+   margin: 0;
+   color: #fff;
+   background: black;
+   overflow-x: hidden;
+   position: relative;
+   height: 100vh;
+ }
 
-    /* Navbar estilo NASA */
-    .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #000;
-      padding: 15px 30px;
-      position: relative;
-      color: white;
-      flex-wrap: wrap;
-    }
+ /* Stars canvas behind everything */
+ canvas#stars {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   z-index: -1;
+   background: radial-gradient(ellipse at bottom, #000 0%, #020111 100%);
+ }
 
-    .left-section, .right-section {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+ /* Blue top banner */
+ .top-banner {
+   background-color: #0033a0;
+   color: white;
+   text-align: center;
+   padding: 10px 20px;
+   font-size: 14px;
+ }
 
-    .logo {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      height: 40px;
-      margin-top: 6px;
-    }
+ /* NASA-style Navbar */
+ .navbar {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   background-color: #000;
+   padding: 15px 30px;
+   position: relative;
+   color: white;
+   flex-wrap: wrap;
+ }
 
-    .dropdown {
-      border: 2px solid #005eff;
-      padding: 8px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      background: none;
-      color: white;
-    }
+ .left-section,
+ .right-section {
+   display: flex;
+   align-items: center;
+   gap: 20px;
+   flex-wrap: wrap;
+ }
 
-    .search-box input {
-      padding: 8px;
-      border: 1px solid #555;
-      border-radius: 4px;
-      background: #111;
-      color: white;
-    }
+ .logo-container {
+   position: absolute;
+   top: 20px;
+   left: 50%;
+   transform: translateX(-50%);
+   z-index: 20;
+ }
 
-    .nav-item {
-      position: relative;
-      cursor: pointer;
-    }
+ .logo {
+   height: 40px;
+   /* Make the image behave as a block to avoid extra spaces */
+   display: block;
+ }
 
-    .nav-item::after {
-      content: '▼';
-      font-size: 10px;
-      margin-left: 5px;
-    }
+ .dropdown {
+   border: 2px solid #005eff;
+   padding: 8px 14px;
+   border-radius: 4px;
+   cursor: pointer;
+   font-weight: bold;
+   background: none;
+   color: white;
+ }
 
-    .live-tag {
-      background: red;
-      color: white;
-      padding: 2px 6px;
-      font-size: 10px;
-      font-weight: bold;
-      border-radius: 3px;
-      margin-left: 4px;
-      vertical-align: top;
-    }
+ .search-box input {
+   padding: 8px;
+   border: 1px solid #555;
+   border-radius: 4px;
+   background: #111;
+   color: white;
+ }
 
-    /* Controles superiores */
-    .top-controls {
-      position: absolute;
-      top: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 20px;
-      z-index: 10;
-    }
-    /*  Controles integrados */
-    .year-selector {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(17, 17, 17, 0.8);
-      padding: 8px 14px;
-      border-radius: 8px;
-      border: 2px solid #005eff;
-    }
+ .nav-item {
+   position: relative;
+   cursor: pointer;
+ }
 
-    .year-selector button {
-      font-size: 16px;
-      border: none;
-      background: #005eff;
-      color: white;
-      border-radius: 4px;
-      padding: 6px 12px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
+ .nav-item::after {
+   content: '▼';
+   font-size: 10px;
+   margin-left: 5px;
+ }
 
-    .year-selector button:hover {
-      background: #003d99;
-    }
+ .live-tag {
+   background: red;
+   color: white;
+   padding: 2px 6px;
+   font-size: 10px;
+   font-weight: bold;
+   border-radius: 3px;
+   margin-left: 4px;
+   vertical-align: top;
+ }
 
-    .year {
-      font-size: 18px;
-      font-weight: bold;
-      min-width: 60px;
-      text-align: center;
-      color: white;
-    }
+ /* Top controls */
+ .top-controls {
+   position: absolute;
+   top: 80px;
+   left: 50%;
+   transform: translateX(-50%);
+   display: flex;
+   gap: 20px;
+   z-index: 10;
+ }
 
-    select {
-      font-size: 16px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid #005eff;
-      background: #111;
-      color: white;
-    }
+ .manual-selector {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   background: rgba(17, 17, 17, 0.8);
+   padding: 8px 14px;
+   border-radius: 8px;
+   border: 1px solid #005eff;
+ }
 
-    /* Content */
-    .content {
-      padding: 10px;
-      display: flex;
-      justify-content: center;
-    }
+ .manual-selector button {
+   font-size: 16px;
+   border: none;
+   background: #005eff;
+   color: white;
+   border-radius: 4px;
+   padding: 6px 12px;
+   cursor: pointer;
+   transition: background 0.3s;
+ }
 
-    .image-container {
-      width: 100%;
-      max-width: 1200px;
-      height: 600px; /* Definimos una altura para la escena 3D */
-      border: 2px solid #005eff;
-      border-radius: 8px;
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.6);
-      box-shadow: 0 0 20px rgba(0, 0, 255, 0.2);
-    }
+ .manual-selector button:hover:not(:disabled) {
+   background: #003d99;
+ }
 
-    .image-container img {
-      width: 100%;
-      display: block;
-    }
+ .manual-selector button:disabled {
+   background: #3a3a3a;
+   opacity: 0.6;
+   cursor: not-allowed;
+ }
 
-    /* Estilos para el iframe de la escena VR */
-    .vr-iframe {
-      width: 100%;
-      max-width: 1200px;
-      height: 600px; /* Altura para la escena 3D */
-      border-radius: 8px;
-      overflow: hidden;
-      background: #000; /* Fondo mientras carga */
-      display: block; /* Asegura que se comporte como un bloque */
-      margin: 0 auto; /* Centra el iframe si el contenedor es más ancho */
-    }
+ .range-selector {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   background: rgba(17, 17, 17, 0.8);
+   padding: 8px 14px;
+   border-radius: 8px;
+   border: 1px solid #005eff;
+ }
 
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-      .logo {
-        position: static;
-        transform: none;
-        align-self: center;
-      }
-    }
+ .year-input {
+   display: flex;
+   align-items: center;
+   gap: 5px;
+ }
 
-    /* Ocultar el HUD (controles y logo) cuando A-Frame está en pantalla completa */
-    html.a-fullscreen .top-controls,
-    html.a-fullscreen .logo {
-      display: none;
-    }
+ #play-animation {
+   font-size: 14px;
+   border: none;
+   background: #005eff;
+   color: white;
+   border-radius: 4px;
+   padding: 8px 14px;
+   cursor: pointer;
+   transition: background 0.3s;
+ }
 
-    /* Ocultar borde y sombra del contenedor en pantalla completa */
-    html.a-fullscreen .image-container {
-      border: none;
-      box-shadow: none;
-    }
+ #play-animation:hover:not(:disabled) {
+   background: #003d99;
+ }
+
+ #play-animation:disabled {
+   background: #3a3a3a;
+   opacity: 0.6;
+   cursor: not-allowed;
+ }
+
+ .year-display {
+   position: absolute;
+   top: 135px;
+   left: 50%;
+   transform: translateX(-50%);
+   font-size: 18px;
+   font-weight: bold;
+   text-align: center;
+   color: white;
+   z-index: 10;
+ }
+
+ select {
+   font-size: 16px;
+   padding: 6px 10px;
+   border-radius: 6px;
+   border: 1px solid #005eff;
+   background: #111;
+   color: white;
+ }
+
+ /* Content */
+ .content {
+   padding: 10px;
+   display: flex;
+   justify-content: center;
+ }
+
+ .image-container {
+   width: 100%;
+   /* Usamos 100% para dejar un pequeño margen a los lados */
+   max-width: 1500px;
+   /* The height will be 100% of the viewport height minus the header space (150px) and padding (20px) */
+   height: calc(100vh - 10px - 10px);
+   position: relative;
+   border: 2px solid #005eff;
+   border-radius: 8px;
+   overflow: hidden;
+   background: rgba(0, 0, 0, 0.6);
+   box-shadow: 0 0 20px rgba(0, 0, 255, 0.2);
+ }
+
+
+
+ /* Styles for the VR scene iframe */
+ .vr-iframe {
+   width: 100%;
+   max-width: 1200px;
+   height: 600px;
+   /* Altura para la escena 3D */
+   border-radius: 8px;
+   overflow: hidden;
+   background: #000;
+   /* Fondo mientras carga */
+   display: block;
+   /* Asegura que se comporte como un bloque */
+   margin: 0 auto;
+   /* Centra el iframe si el contenedor es más ancho */
+ }
+
+
+
+ @media (max-width: 900px) {
+
+   /* On smaller screens, stack the controls and make them wrap */
+   .top-controls {
+     flex-wrap: wrap;
+     justify-content: center;
+     top: 70px;
+     width: 95%;
+   }
+
+ }
+
+ @media (max-width: 480px) {
+   .logo {
+     height: 35px;
+   }
+
+   .top-controls {
+     top: 60px;
+     gap: 10px;
+   }
+
+   .year-display {
+     top: 250px;
+     font-size: 16px;
+   }
+
+   .navbar {
+     padding: 10px 15px;
+   }
+
+   .image-container {
+     padding-top: 30px;
+     height: calc(100vh - 10px - 10px - 100px);
+   }
+
+ }
+
+
+ /* Hide the HUD (controls and logo) when A-Frame is in fullscreen */
+ html.a-fullscreen .top-controls,
+ html.a-fullscreen .logo {
+   display: none;
+ }
+
+ /* Hide border and shadow of the container in fullscreen */
+ html.a-fullscreen .image-container {
+   border: none;
+   box-shadow: none;
+ }

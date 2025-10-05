@@ -11,20 +11,39 @@
 </head>
 
 <body>
-  <!--  Fondo estrellado -->
-  <canvas id="stars"></canvas>
+  <!-- Intro Video Container -->
+  <div id="intro-video-container">
+    <video id="intro-video" src="animations/Intro.mp4" autoplay muted playsinline></video>
+  </div>
 
-  <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="NASA Logo">
+  <!-- Starry background -->
+  <canvas id="stars"></canvas>
+  <!-- NASA Logo -->
+  <div class="logo-container">
+    <img class="logo" src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="NASA Logo">
+  </div>
 
   <div class="top-controls">
-    <!-- Selector de año -->
-    <div class="year-selector">
-      <button id="prev">←</button>
-      <div class="year" id="year"></div>
-      <button id="next">→</button>
+    <!-- Manual year selector -->
+    <div class="manual-selector">
+      <button id="prev" disabled>←</button>
+      <button id="next" disabled>→</button>
     </div>
 
-    <!-- Combo box de espectros -->
+    <!-- Selector de Rango de Años -->
+    <div class="range-selector">
+      <div class="year-input">
+        <label for="start-year">From:</label>
+        <select id="start-year" disabled></select>
+      </div>
+      <div class="year-input">
+        <label for="end-year">To:</label>
+        <select id="end-year" disabled></select>
+      </div>
+      <button id="play-animation" disabled>▶️ Animate</button>
+    </div>
+
+    <!-- Spectrums combo box -->
     <select id="spectrums">
       <!-- <option value="aster">ASTER</option> -->
       <!-- <option value="ceres">CERES</option> -->
@@ -34,25 +53,27 @@
     </select>
   </div>
 
-  <!--Contenido -->
+  <!-- Display for the current animation year -->
+  <div class="year-display" id="year">...</div>
+
+  <!-- Content -->
   <div class="content">
     <div class="image-container">
       <a-scene embedded>
-        <!-- 1. Cargamos la textura como un asset -->
-        <a-assets>
-          <img id="sphereTexture" src="imgs/feb_may2000.jpg">
+        <!-- 1. Load the texture as an asset -->
+        <a-assets id="image-assets">
+          <canvas id="dynamic-texture-canvas" width="4096" height="2048"></canvas>
         </a-assets>
-
-        <!-- Luces para iluminar la escena -->
+        <!-- Lights to illuminate the scene -->
         <a-light type="ambient" color="#666"></a-light>
 
-        <!-- 1. Añadimos una cámara y colocamos una luz de tipo 'point' dentro de ella -->
+        <!-- 1. Add a camera and place a 'point' light inside it -->
         <a-camera position="0 1.6 0">
           <a-light type="point" intensity="0.75"></a-light>
         </a-camera>
 
-        <!-- 2. Aplicamos la textura a la esfera usando el atributo 'src' -->
-        <a-sphere id="terra-sphere" position="0 1.5 -4" radius="1.4" src="#sphereTexture" conditional-rotation="speed: 10"></a-sphere>
+        <!-- 2. Apply the texture to the sphere using the 'src' attribute -->
+        <a-sphere id="terra-sphere" position="0 1.2 -4" radius="2" src="#dynamic-texture-canvas" conditional-rotation="speed: 10"></a-sphere>
       </a-scene>
     </div>
   </div>
