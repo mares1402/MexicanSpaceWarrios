@@ -23,12 +23,6 @@
    width: 100%;
    height: 100%;
    object-fit: cover; /* Fill the screen without distorting the video */
-   cursor: pointer; /* Indicate that the video is clickable */
- }
- 
- /* Hide the browser's default video controls to ensure our custom UI works consistently */
- #intro-video::-webkit-media-controls {
-   display: none !important;
  }
 
  #skip-intro-btn {
@@ -343,8 +337,7 @@
 
  /* Hide the HUD (controls and logo) when A-Frame is in fullscreen */
  html.a-fullscreen .top-controls,
- html.a-fullscreen .logo,
- html.a-fullscreen .year-display {
+ html.a-fullscreen .logo {
    display: none;
  }
 
