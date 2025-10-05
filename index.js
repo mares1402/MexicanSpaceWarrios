@@ -1,61 +1,107 @@
-    /**
-     * Handles the intro video playback.
-     * It hides the video container once the video has finished playing.
-     */
-    (function handleIntroVideo() {
-      const introContainer = document.getElementById('intro-video-container');
-      const introVideo = document.getElementById('intro-video');
-      const skipBtn = document.getElementById('skip-intro-btn');
+document.addEventListener('DOMContentLoaded', () => {
+  // --- DOM Elements ---
+  const yearElement = document.getElementById("year");
+  const prevBtn = document.getElementById("prev");
+  const nextBtn = document.getElementById("next");
+  const spectrumSelect = document.getElementById("spectrums");
+  const sphere = document.getElementById("terra-sphere");
+  const startYearSelect = document.getElementById("start-year");
+  const endYearSelect = document.getElementById("end-year");
+  const playBtn = document.getElementById("play-animation");
+  const simulateBtn = document.getElementById("simulate-btn");
+  const textureCanvas = document.getElementById('dynamic-texture-canvas');
+  const textureCtx = textureCanvas.getContext('2d');
+  const assetsContainer = document.getElementById('image-assets');
 
-      if (introContainer && introVideo && skipBtn) {
-        const finishIntro = () => {
-          // Remove listeners to prevent this from running twice
-          introVideo.removeEventListener('ended', finishIntro);
-          skipBtn.removeEventListener('click', finishIntro);
+  // --- State Variables ---
+  const spectrumData = {
+    modis: { minYear: 2000, maxYear: 2025, currentYear: 2000 },
+    aster: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
+    ceres: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
+    misr: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
+    mopitt: { minYear: 2025, maxYear: 2025, currentYear: 2025 }
+  };
+  let currentSpectrum = spectrumSelect.value;
+  let currentYear = spectrumData[currentSpectrum].currentYear;
+  let animationInterval = null;
 
-          introContainer.style.opacity = '0'; // Start fade-out
-          // After the transition, hide the element completely
-          setTimeout(() => {
-            introContainer.style.display = 'none'; // Hide video container completely
-          }, 800); // Must match the transition duration in CSS
-        };
+  // --- Intro Video Logic ---
+  function setupIntro() {
+    const introContainer = document.getElementById('intro-video-container');
+    const introVideo = document.getElementById('intro-video');
+    const skipBtn = document.getElementById('skip-intro-btn');
 
-        introVideo.addEventListener('ended', finishIntro);
-        skipBtn.addEventListener('click', finishIntro);
-      }
-    })();
+    if (!introContainer || !introVideo || !skipBtn || !sphere) return;
 
-    const spectrumData = {
-      // Defines the year range and current year for each spectrum.
-      modis: {
-        minYear: 2000,
-        maxYear: 2025,
-        currentYear: 2000 // We start in the year 2000
-      },
-      // Other spectrums can be configured here in the future
-      aster: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
-      ceres: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
-      misr: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
-      mopitt: { minYear: 2025, maxYear: 2025, currentYear: 2025 }
+    sphere.setAttribute('visible', 'false');
+
+    const finishIntro = () => {
+      introVideo.removeEventListener('ended', finishIntro);
+      skipBtn.removeEventListener('click', finishIntro);
+      introContainer.style.opacity = '0';
+      setTimeout(() => {
+        introContainer.style.display = 'none';
+        sphere.setAttribute('visible', 'true');
+      }, 800);
     };
 
-    let currentSpectrum = document.getElementById("spectrums").value;
-    let currentYear = spectrumData[currentSpectrum].currentYear;
+    const handleIntroFullscreen = () => {
+      if (!document.fullscreenElement) {
+        introContainer.requestFullscreen().catch(err => {
+          console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    };
 
-    const yearElement = document.getElementById("year");
-    const prevBtn = document.getElementById("prev");
-    const nextBtn = document.getElementById("next");
-    const spectrumSelect = document.getElementById("spectrums");
-    const sphere = document.getElementById("terra-sphere");
-    const startYearSelect = document.getElementById("start-year");
-    const endYearSelect = document.getElementById("end-year");
-    const playBtn = document.getElementById("play-animation");
+    const handleIntroPlayback = (event) => {
+      if (event.target.id !== 'skip-intro-btn') {
+        introVideo.paused ? introVideo.play() : introVideo.pause();
+      }
+    };
 
-    // Get the context of the canvas we will use as a dynamic texture
-    const textureCanvas = document.getElementById('dynamic-texture-canvas');
-    const textureCtx = textureCanvas.getContext('2d');
+    introVideo.addEventListener('ended', finishIntro);
+    skipBtn.addEventListener('click', finishIntro);
+    introContainer.addEventListener('dblclick', handleIntroFullscreen);
+    introContainer.addEventListener('click', handleIntroPlayback);
+  }
 
-    let animationInterval = null;
+  // --- Event Handlers ---
+  function handlePrevClick() {
+    stopAnimation();
+    if (currentYear > spectrumData[currentSpectrum].minYear) {
+      currentYear--;
+      updateUI();
+    }
+  }
+
+  function handleNextClick() {
+    stopAnimation();
+    if (currentYear < spectrumData[currentSpectrum].maxYear) {
+      currentYear++;
+      updateUI();
+    }
+  }
+
+  function handleSpectrumChange(e) {
+    stopAnimation();
+    currentSpectrum = e.target.value;
+    currentYear = spectrumData[currentSpectrum].currentYear;
+    populateYearSelectors();
+    updateUI();
+  }
+
+  function handleResize() {
+    adjustSphereRadius();
+  }
+
+  // --- UI Update Functions ---
+  function updateUI() {
+    yearElement.textContent = currentYear;
+    updateSphereTexture();
+    updateButtonState();
+  }
 
     /**
      * Populates the year selectors (From/To) with the available options.
@@ -83,6 +129,7 @@
       // The 'next' button is disabled if the current year is the maximum.
       nextBtn.disabled = currentYear >= data.maxYear;
     }
+
     /**
      * Updates the sphere's texture.
      * Verifies if the image exists before applying it.
@@ -107,7 +154,7 @@
       }
     }
 
-    /**
+    /** 
      * Starts the texture animation based on the selected year range.
      */
     function playAnimation() {
@@ -118,7 +165,7 @@
         alert("El año de inicio no puede ser mayor que el año final.");
         return;
       }
-      
+
       playBtn.disabled = true; // Disable the button during animation
       prevBtn.disabled = true;
       nextBtn.disabled = true;
@@ -159,50 +206,87 @@
       animationInterval = requestAnimationFrame(animationLoop);
     }
 
-    prevBtn.addEventListener("click", () => {
-      stopAnimation();
-      if (currentYear > spectrumData[currentSpectrum].minYear) {
-        currentYear--;
-        yearElement.textContent = currentYear;
-        updateSphereTexture();
-        updateButtonState();
-      }
-    });
-
-    nextBtn.addEventListener("click", () => {
-      stopAnimation();
-      if (currentYear < spectrumData[currentSpectrum].maxYear) {
-        currentYear++;
-        yearElement.textContent = currentYear;
-        updateSphereTexture();
-        updateButtonState();
-      }
-    });
-
-    playBtn.addEventListener("click", playAnimation);
-
     function stopAnimation() {
       if (animationInterval) {
         cancelAnimationFrame(animationInterval);
         animationInterval = null;
         playBtn.disabled = false;
+        updateButtonState(); // Re-enable nav buttons if needed
       }
     }
-    spectrumSelect.addEventListener("change", (e) => {
-      currentSpectrum = e.target.value;
-      populateYearSelectors();
-      currentYear = spectrumData[currentSpectrum].currentYear
-      updateSphereTexture()
-      updateButtonState(); // <-- FIX! Update buttons when changing spectrum
-      yearElement.textContent = currentYear
-    });
+
+    /**
+     * Sends the current sphere texture to the backend simulator
+     * and displays the predicted next-year texture.
+     */
+    async function handleSimulation() {
+      stopAnimation();
+      simulateBtn.disabled = true;
+      simulateBtn.textContent = '🧠 Simulating...';
+
+      // 1. Get the current image from the canvas as a Blob
+      textureCanvas.toBlob(async (blob) => {
+        if (!blob) {
+          alert('Could not get image from canvas.');
+          simulateBtn.textContent = '🔮 Simulate Next Year';
+          return;
+        }
+
+        // 2. Send the image to the FastAPI backend
+        const formData = new FormData();
+        formData.append('imagen', blob, 'current_year.jpg');
+
+        try {
+          // We wrap the fetch call in its own try...catch to provide a more specific error message.
+          let response;
+          try {
+            response = await fetch('http://localhost:8000/predecir', {
+            method: 'POST',
+            body: formData,
+          });
+
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+          const imageBlob = await response.blob();
+          } catch (networkError) {
+            // This block catches network errors, like the server not being available.
+            console.error("Network error:", networkError);
+            alert("Connection to the simulation server failed. \n\nIs the Python server running in the terminal?");
+            throw networkError; // Stop further execution
+          }
+          const imageUrl = URL.createObjectURL(imageBlob);
+          const predictedImage = new Image();
+          predictedImage.onload = () => {
+            // 3. Draw the predicted image onto the canvas
+            textureCtx.drawImage(predictedImage, 0, 0, textureCanvas.width, textureCanvas.height);
+            const material = sphere.getObject3D('mesh').material;
+            if (material.map) material.map.needsUpdate = true;
+
+            // 4. Update UI to reflect the new "simulated" year
+            currentYear++;
+            yearElement.textContent = `${currentYear} (Simulated)`;
+            updateButtonState(); // Disable 'next' if we are at max year
+            simulateBtn.textContent = '🔮 Simulate Next Year';
+            // Re-enable if we can simulate further
+            simulateBtn.disabled = currentYear >= spectrumData[currentSpectrum].maxYear;
+            URL.revokeObjectURL(imageUrl); // Clean up
+          };
+          predictedImage.src = imageUrl;
+
+        } catch (error) {
+          console.error("Simulation failed:", error);
+          // General failure message, as the specific network error is handled above.
+          simulateBtn.textContent = '🔮 Simulate Next Year';
+          simulateBtn.disabled = false;
+        }
+      }, 'image/jpeg');
+    }
 
     /**
      * Preloads all images for a specific spectrum in the background.
      * Adds them to the A-Frame asset system for instant switching.
      */
     function preloadSpectrumImages(spectrumName) {
-      const assetsContainer = document.getElementById('image-assets');
       const data = spectrumData[spectrumName];
       if (!data || !assetsContainer) return;
 
@@ -219,32 +303,30 @@
         playBtn.disabled = false;
         startYearSelect.disabled = false;
         endYearSelect.disabled = false;
+        simulateBtn.disabled = false;
         // We show the current year, replacing the loading indicator.
         yearElement.textContent = currentYear; // Ensure the year is displayed.
       });
 
       console.log(`Pre-cargando imágenes para '${spectrumName}' desde ${data.minYear} hasta ${data.maxYear}...`);
-      
+
       // Add the fallback image to the assets
       const fallbackImg = document.createElement('img');
       fallbackImg.id = 'fallback-texture';
-      fallbackImg.src = 'imgs/texture-not-found.jpg';
+      fallbackImg.src = 'imgs_modis/texture-not-found.jpg';
       assetsContainer.appendChild(fallbackImg);
 
       // Add all images from the range to the assets
       for (let year = data.minYear; year <= data.maxYear; year++) {
         const img = document.createElement('img');
         img.id = `${spectrumName}-${year}-texture`;
-        img.src = `imgs/${spectrumName}-${year}.jpg`;
+        img.src = `imgs_modis/${spectrumName}-${year}.jpg`;
         assetsContainer.appendChild(img);
       }
 
       // We show a "loading" state while the assets are being processed.
-      document.getElementById('year').textContent = '...';
+      yearElement.textContent = '...';
     }
-
-    // We preload the images for the current spectrum (MODIS) on page load.
-    preloadSpectrumImages(currentSpectrum);
 
     /**
      * Adjusts the sphere's radius for mobile devices.
@@ -269,13 +351,29 @@
       }
     }
 
-    function resize() {
-      adjustSphereRadius(); // Adjust the sphere's radius on resize
+    // --- Initialization ---
+    function setupEventListeners() {
+      prevBtn.addEventListener("click", handlePrevClick);
+      nextBtn.addEventListener("click", handleNextClick);
+      playBtn.addEventListener("click", playAnimation);
+      spectrumSelect.addEventListener("change", handleSpectrumChange);
+      simulateBtn.addEventListener("click", handleSimulation);
+      window.addEventListener("resize", handleResize);
     }
-    window.addEventListener("resize", resize);
-    resize(); // Initial call to set the correct size on load
-    
-    /**
+
+    function init() {
+      setupIntro();
+      setupEventListeners();
+      adjustSphereRadius(); // Initial call to set the correct size on load
+      preloadSpectrumImages(currentSpectrum); // Start preloading images
+    }
+
+    init(); // Start the application
+
+  });
+
+
+  /**
      * Self-executing function to encapsulate and run the star animation
      * completely independently.
      */
