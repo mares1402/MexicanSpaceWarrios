@@ -102,6 +102,16 @@
       vertical-align: top;
     }
 
+    /* Controles superiores */
+    .top-controls {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 10;
+    }
     /*  Controles integrados */
     .year-selector {
       display: flex;

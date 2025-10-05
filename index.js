@@ -1,38 +1,101 @@
- const spectrumsYears = {
-      aster: 2025,
-      ceres: 2025,
-      misr: 2025,
-      modis: 2025,
-      mopitt: 2025
+    const spectrumData = {
+      // Define el rango de años y el año actual para cada espectro.
+      modis: {
+        minYear: 2000,
+        maxYear: 2025,
+        currentYear: 2000 // Empezamos en el año 2000
+      },
+      // Se pueden configurar los otros espectros aquí en el futuro
+      aster: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
+      ceres: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
+      misr: { minYear: 2025, maxYear: 2025, currentYear: 2025 },
+      mopitt: { minYear: 2025, maxYear: 2025, currentYear: 2025 }
     };
 
     let currentSpectrum = document.getElementById("spectrums").value;
-    let currentYear = spectrumsYears[currentSpectrum];
+    let currentYear = spectrumData[currentSpectrum].currentYear;
 
     const yearElement = document.getElementById("year");
     const prevBtn = document.getElementById("prev");
     const nextBtn = document.getElementById("next");
     const spectrumSelect = document.getElementById("spectrums");
+    const sphere = document.getElementById("terra-sphere");
 
     yearElement.textContent = currentYear;
 
+    /**
+     * Habilita o deshabilita los botones de navegación de año
+     * según los límites definidos en spectrumData.
+     */
+    function updateButtonState() {
+      const data = spectrumData[currentSpectrum];
+      // El botón 'prev' se deshabilita si el año actual es el mínimo.
+      prevBtn.disabled = currentYear <= data.minYear;
+      // El botón 'next' se deshabilita si el año actual es el máximo.
+      nextBtn.disabled = currentYear >= data.maxYear;
+    }
+
+
+
+    /**
+     * Actualiza la textura de la esfera.
+     * Verifica si la imagen existe antes de aplicarla.
+     * Si no existe, aplica una textura por defecto.
+     */
+    function updateSphereTexture() {
+      const newTextureSrc = `imgs/${currentSpectrum}-${currentYear}.jpg`;
+      const fallbackTextureSrc = 'imgs/texture-not-found.jpg'; // <-- ¡Asegúrate de tener esta imagen!
+
+      console.log(`Intentando cargar textura: ${newTextureSrc}`);
+
+      // Creamos un objeto de imagen en memoria para verificar si existe
+      const img = new Image();
+      img.src = newTextureSrc;
+
+      img.onload = () => {
+        console.log(`✅ Éxito: Textura '${newTextureSrc}' cargada y aplicada.`);
+        // La imagen existe, la aplicamos a la esfera
+        sphere.setAttribute('material', 'src', newTextureSrc);
+      };
+      img.onerror = () => {
+        console.error(`❌ Error: No se encontró la imagen '${newTextureSrc}'. Aplicando textura de respaldo.`);
+        // La imagen no se encontró, aplicamos la de respaldo
+        sphere.setAttribute('material', 'src', fallbackTextureSrc);
+      };
+    }
+
     prevBtn.addEventListener("click", () => {
-      currentYear--;
-      spectrumsYears[currentSpectrum] = currentYear;
-      yearElement.textContent = currentYear;
+      if (currentYear > spectrumData[currentSpectrum].minYear) {
+        currentYear--;
+        spectrumData[currentSpectrum].currentYear = currentYear;
+        yearElement.textContent = currentYear;
+        updateSphereTexture();
+        updateButtonState();
+      }
     });
 
     nextBtn.addEventListener("click", () => {
-      currentYear++;
-      spectrumsYears[currentSpectrum] = currentYear;
-      yearElement.textContent = currentYear;
+      if (currentYear < spectrumData[currentSpectrum].maxYear) {
+        currentYear++;
+        spectrumData[currentSpectrum].currentYear = currentYear;
+        yearElement.textContent = currentYear;
+        updateSphereTexture();
+        updateButtonState();
+      }
     });
 
     spectrumSelect.addEventListener("change", (e) => {
       currentSpectrum = e.target.value;
-      currentYear = spectrumsYears[currentSpectrum];
+      currentYear = spectrumData[currentSpectrum].currentYear;
       yearElement.textContent = currentYear;
+      updateSphereTexture();
+      updateButtonState();
     });
+
+    // Llamada inicial para sincronizar la esfera con el estado inicial del script
+    updateSphereTexture();
+    // Llamada inicial para establecer el estado correcto de los botones
+    updateButtonState();
 
     /* ✨ Animación del fondo de estrellas */
     const canvas = document.getElementById("stars");
