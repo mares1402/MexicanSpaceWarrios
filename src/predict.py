@@ -2,14 +2,15 @@ import os
 import numpy as np
 import torch
 from PIL import Image
-from src.train import Autoencoder
+from .train import Autoencoder
 import matplotlib.pyplot as plt
 
 IMAGE_DIR = "public/imgs"
 MODEL_PATH = "models/autoencoder.pth"
 OUTPUT_IMAGE = "outputs/prediction_future.jpg"
 COMPARISON_IMAGE = "outputs/comparison.png"
-IMG_SIZE = (4096, 2048)
+TRAIN_IMG_SIZE = (512, 256) # The size the model was trained on
+FINAL_IMG_SIZE = (4096, 2048) # The desired high-resolution output
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def load_images(image_dir, img_size):
@@ -31,7 +32,7 @@ def main():
         print("❌ Error: Model not found. Run 'python src/train.py' first.")
         return
 
-    images, paths = load_images(IMAGE_DIR, IMG_SIZE)
+    images, paths = load_images(IMAGE_DIR, TRAIN_IMG_SIZE)
     if len(images) < 2:
         print("❌ Error: At least 2 images are required in 'img/'.")
         return
@@ -61,7 +62,8 @@ def main():
 
     # Save prediction
     pred_clipped = np.clip(pred, 0, 1)
-    pred_img = Image.fromarray((pred_clipped * 255).astype(np.uint8))
+    pred_img_raw = Image.fromarray((pred_clipped * 255).astype(np.uint8))
+    pred_img = pred_img_raw.resize(FINAL_IMG_SIZE, Image.Resampling.LANCZOS) # Resize to high quality
     pred_img.save(OUTPUT_IMAGE)
     print(f"✅ Prediction saved: {OUTPUT_IMAGE}")
 

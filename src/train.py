@@ -5,11 +5,12 @@ import torch.nn as nn
 import torch.optim as optim
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
+from tqdm import tqdm
 
 # Configuration
-IMAGE_DIR = "img/"
+IMAGE_DIR = "public/imgs"
 MODEL_SAVE_PATH = "models/autoencoder.pth"
-IMG_SIZE = (256, 256)
+IMG_SIZE = (512, 256)  # Reduced size for efficient training
 BATCH_SIZE = 4
 EPOCHS = 100
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -59,11 +60,11 @@ class Autoencoder(nn.Module):
 
 def main():
     os.makedirs("models", exist_ok=True)
-    if not os.path.exists(IMAGE_DIR) or not os.listdir(IMAGE_DIR):
-        print("❌ Error: Folder 'img/' is missing or empty. Please add your 25 JPG images.")
+    dataset = EVIImageDataset(IMAGE_DIR, IMG_SIZE)
+    if len(dataset) == 0:
+        print(f"❌ Error: No .jpg images found in '{IMAGE_DIR}'. Please add your training images.")
         return
 
-    dataset = EVIImageDataset(IMAGE_DIR, IMG_SIZE)
     dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
     model = Autoencoder().to(DEVICE)
@@ -74,7 +75,7 @@ def main():
     for epoch in range(EPOCHS):
         model.train()
         total_loss = 0
-        for batch in dataloader:
+        for batch in tqdm(dataloader, desc=f"Epoch {epoch+1}/{EPOCHS}", unit="batch"):
             batch = batch.to(DEVICE)
             optimizer.zero_grad()
             recon = model(batch)
@@ -82,7 +83,7 @@ def main():
             loss.backward()
             optimizer.step()
             total_loss += loss.item()
-        if epoch % 20 == 0 or epoch == EPOCHS - 1:
+        if (epoch + 1) % 20 == 0 or epoch == EPOCHS - 1:
             print(f"Epoch {epoch+1}/{EPOCHS}, Loss: {total_loss/len(dataloader):.6f}")
 
     torch.save(model.state_dict(), MODEL_SAVE_PATH)

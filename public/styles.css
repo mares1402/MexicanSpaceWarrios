@@ -12,17 +12,20 @@
    width: 100%;
    height: 100%;
    background-color: black;
-   z-index: 9999; /* Ensure it's on top of everything */
+   z-index: 9999;
+   /* Ensure it's on top of everything */
    display: flex;
    justify-content: center;
    align-items: center;
-   transition: opacity 0.8s ease-out; /* Smooth fade-out effect */
+   transition: opacity 0.8s ease-out;
+   /* Smooth fade-out effect */
  }
 
  #intro-video {
    width: 100%;
    height: 100%;
-   object-fit: cover; /* Fill the screen without distorting the video */
+   object-fit: cover;
+   /* Fill the screen without distorting the video */
  }
 
  #skip-intro-btn {
@@ -43,7 +46,8 @@
    display: flex;
    justify-content: center;
    align-items: center;
-   padding-bottom: 3px; /* Small adjustment for perfect vertical alignment */
+   padding-bottom: 3px;
+   /* Small adjustment for perfect vertical alignment */
  }
 
  #skip-intro-btn:hover {
@@ -70,6 +74,13 @@
    height: 100%;
    z-index: -1;
    background: radial-gradient(ellipse at bottom, #000 0%, #020111 100%);
+ }
+
+ /* Hide the UI elements during the intro video, but keep the A-Frame canvas container visible */
+ body.intro-active .top-controls,
+ body.intro-active .logo-container,
+ body.intro-active .year-display {
+   visibility: hidden;
  }
 
  /* Blue top banner */
@@ -111,7 +122,7 @@
    align-items: center;
    gap: 15px;
  }
- 
+
  .logo-container h1 {
    margin: 0;
    font-size: 24px;
@@ -124,7 +135,7 @@
    height: 40px;
    /* Make the image behave as a block to avoid extra spaces */
  }
- 
+
 
  .dropdown {
    border: 2px solid #005eff;
@@ -172,19 +183,21 @@
    top: 80px;
    left: 50%;
    transform: translateX(-50%);
-   display: flex;
-   gap: 20px;
-   z-index: 10;
- }
-
- .manual-selector {
+   /* New styles for a unified panel */
    display: flex;
    align-items: center;
-   gap: 10px;
-   background: rgba(17, 17, 17, 0.8);
-   padding: 8px 14px;
-   border-radius: 8px;
+   gap: 25px;
+   /* Increased gap for better spacing */
+   z-index: 10;
+   background: rgba(17, 17, 17, 0.85);
+   /* Unified background */
+   padding: 12px 20px;
+   /* Unified padding */
+   border-radius: 12px;
+   /* Smoother corners */
    border: 1px solid #005eff;
+   backdrop-filter: blur(5px);
+   /* Frosted glass effect */
  }
 
  .manual-selector button {
@@ -212,10 +225,6 @@
    display: flex;
    align-items: center;
    gap: 10px;
-   background: rgba(17, 17, 17, 0.8);
-   padding: 8px 14px;
-   border-radius: 8px;
-   border: 1px solid #005eff;
  }
 
  .year-input {
@@ -245,7 +254,43 @@
    cursor: not-allowed;
  }
 
+ .prediction-selector input {
+   width: 140px;
+   padding: 8px 14px;
+   font-size: 14px;
+   font-family: 'Roboto Slab', serif;
+   border: 1px solid #005eff;
+   border-radius: 8px;
+   background: #111;
+   /* Darker background for contrast */
+   color: white;
+   text-align: center;
+ }
+
+ .prediction-selector input::placeholder {
+   color: #aaa;
+   opacity: 1;
+ }
+
+ /* Oculta las flechas en los inputs de tipo número para un look más limpio */
+ .prediction-selector input::-webkit-outer-spin-button,
+ .prediction-selector input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+ }
+
+  /* Oculta las flechas en los inputs de tipo número para un look más limpio */
+  .prediction-selector input::-webkit-outer-spin-button,
+  .prediction-selector input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+ 
+  
+ 
+
  .year-display {
+   padding-top: 35px;
    position: absolute;
    top: 135px;
    left: 50%;
@@ -268,12 +313,14 @@
 
  /* Content */
  .content {
+
    padding: 10px;
    display: flex;
    justify-content: center;
  }
 
  .image-container {
+   padding-top: 30px;
    width: 100%;
    /* Usamos 100% para dejar un pequeño margen a los lados */
    max-width: 1500px;
@@ -347,13 +394,15 @@
 
 
  /* Hide the HUD (controls and logo) when A-Frame is in fullscreen */
- html.a-fullscreen .top-controls,
- html.a-fullscreen .logo {
+ /* Hide the entire HUD when A-Frame is in fullscreen, but NOT during the intro */
+ html.a-fullscreen:not(.intro-active) .top-controls,
+ html.a-fullscreen:not(.intro-active) .logo-container,
+ html.a-fullscreen:not(.intro-active) .year-display {
    display: none;
  }
 
  /* Hide border and shadow of the container in fullscreen */
- html.a-fullscreen .image-container {
+ html.a-fullscreen:not(.intro-active) .image-container {
    border: none;
    box-shadow: none;
  }
